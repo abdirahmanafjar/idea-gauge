@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { IdeaInput } from "@/components/IdeaInput";
@@ -6,24 +6,45 @@ import { OverallGrade } from "@/components/OverallGrade";
 import { GradeCard } from "@/components/GradeCard";
 import { LoadingState } from "@/components/LoadingState";
 import { GradeLegend } from "@/components/GradeLegend";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { ExportActions } from "@/components/ExportActions";
 import { BusinessAnalysis } from "@/types/analysis";
+import { AnalysisMode } from "@/components/AnalysisModeSelector";
 import { Lightbulb, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+interface AttachedFile {
+  id: string;
+  file: File;
+  preview?: string;
+}
 
 const Index = () => {
   const [analysis, setAnalysis] = useState<BusinessAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [submittedIdea, setSubmittedIdea] = useState("");
+  const [currentMode, setCurrentMode] = useState<AnalysisMode>("quick");
+  const analysisRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const analyzeIdea = async (idea: string) => {
+  const analyzeIdea = async (idea: string, mode: AnalysisMode, files: AttachedFile[]) => {
     setIsLoading(true);
     setAnalysis(null);
     setSubmittedIdea(idea);
+    setCurrentMode(mode);
 
     try {
+      // If files are attached, we could process them here
+      // For now, we'll just note them in the analysis context
+      const fileContext = files.length > 0 
+        ? `\n\nAttached files for context: ${files.map(f => f.file.name).join(", ")}`
+        : "";
+
       const { data, error } = await supabase.functions.invoke("analyze-idea", {
-        body: { businessIdea: idea },
+        body: { 
+          businessIdea: idea + fileContext,
+          analysisMode: mode 
+        },
       });
 
       if (error) {
@@ -75,17 +96,20 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">AI Business Analyzer</p>
             </div>
           </div>
-          {analysis && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={resetAnalysis}
-              className="gap-2"
-            >
-              <RotateCcw className="h-4 w-4" />
-              New Analysis
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {analysis && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={resetAnalysis}
+                className="gap-2"
+              >
+                <RotateCcw className="h-4 w-4" />
+                New Analysis
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -120,11 +144,23 @@ const Index = () => {
         )}
 
         {analysis && !isLoading && (
-          <div className="space-y-8">
-            {/* Submitted Idea */}
-            <div className="bg-secondary/50 rounded-xl border border-border p-4">
-              <p className="text-xs font-medium text-muted-foreground mb-1">Analyzed Idea:</p>
-              <p className="text-sm text-foreground">{submittedIdea}</p>
+          <div className="space-y-8" ref={analysisRef}>
+            {/* Submitted Idea + Export Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="bg-secondary/50 rounded-xl border border-border p-4 flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-xs font-medium text-muted-foreground">Analyzed Idea:</p>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary capitalize">
+                    {currentMode} mode
+                  </span>
+                </div>
+                <p className="text-sm text-foreground">{submittedIdea}</p>
+              </div>
+              <ExportActions 
+                analysis={analysis} 
+                idea={submittedIdea}
+                analysisRef={analysisRef}
+              />
             </div>
 
             {/* Overall Grade */}
@@ -157,7 +193,7 @@ const Index = () => {
               <h3 className="font-display text-lg font-semibold text-foreground mb-4">
                 Try Another Idea
               </h3>
-              <IdeaInput onSubmit={analyzeIdea} isLoading={isLoading} />
+              <IdeaInput onSubmit={analyzeIdea} isLoading={isLoading} showModeSelector={false} />
             </div>
           </div>
         )}

@@ -2,24 +2,43 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
+import { AnalysisModeSelector, AnalysisMode } from "@/components/AnalysisModeSelector";
+import { FileAttachment } from "@/components/FileAttachment";
 
-interface IdeaInputProps {
-  onSubmit: (idea: string) => void;
-  isLoading: boolean;
+interface AttachedFile {
+  id: string;
+  file: File;
+  preview?: string;
 }
 
-export const IdeaInput = ({ onSubmit, isLoading }: IdeaInputProps) => {
+interface IdeaInputProps {
+  onSubmit: (idea: string, mode: AnalysisMode, files: AttachedFile[]) => void;
+  isLoading: boolean;
+  showModeSelector?: boolean;
+}
+
+export const IdeaInput = ({ onSubmit, isLoading, showModeSelector = true }: IdeaInputProps) => {
   const [idea, setIdea] = useState("");
+  const [mode, setMode] = useState<AnalysisMode>("quick");
+  const [files, setFiles] = useState<AttachedFile[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (idea.trim() && !isLoading) {
-      onSubmit(idea.trim());
+      onSubmit(idea.trim(), mode, files);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4">
+      {showModeSelector && (
+        <AnalysisModeSelector 
+          value={mode} 
+          onValueChange={setMode} 
+          disabled={isLoading}
+        />
+      )}
+      
       <div className="relative">
         <Textarea
           value={idea}
@@ -29,6 +48,13 @@ export const IdeaInput = ({ onSubmit, isLoading }: IdeaInputProps) => {
           disabled={isLoading}
         />
       </div>
+      
+      <FileAttachment 
+        files={files} 
+        onFilesChange={setFiles} 
+        disabled={isLoading}
+      />
+      
       <Button 
         type="submit" 
         className="w-full h-12 bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold text-base hover:opacity-90 transition-all glow-primary disabled:opacity-50 disabled:cursor-not-allowed"
