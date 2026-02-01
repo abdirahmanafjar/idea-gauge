@@ -13,3 +13,17 @@ export interface BusinessAnalysis {
   resourceRequirements: GradeSection;
   summary: string;
 }
+
+export interface ComparisonAnalysis {
+  idea1: BusinessAnalysis;
+  idea2: BusinessAnalysis;
+  winner: "idea1" | "idea2" | "tie";
+  comparisonSummary: string;
+}
+
+export interface AttachedFile {
+  id: string;
+  file: File;
+  preview?: string;
+  base64?: string;
+}
