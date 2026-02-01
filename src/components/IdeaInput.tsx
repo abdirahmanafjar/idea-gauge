@@ -36,7 +36,7 @@ export const IdeaInput = ({ onSubmit, isLoading, showModeSelector = true }: Idea
           value={idea}
           onChange={(e) => setIdea(e.target.value)}
           placeholder="A subscription service for sustainable, locally-sourced meal kits delivered in reusable containers..."
-          className="min-h-[120px] resize-none bg-input border-transparent text-background placeholder:text-background/60 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all rounded-xl"
+          className="min-h-[120px] resize-none bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all rounded-xl"
           disabled={isLoading}
         />
       </div>
