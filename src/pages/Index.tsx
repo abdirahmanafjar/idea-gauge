@@ -12,78 +12,80 @@ import { BusinessAnalysis } from "@/types/analysis";
 import { AnalysisMode } from "@/components/AnalysisModeSelector";
 import { Lightbulb, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 interface AttachedFile {
   id: string;
   file: File;
   preview?: string;
 }
-
 const Index = () => {
   const [analysis, setAnalysis] = useState<BusinessAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [submittedIdea, setSubmittedIdea] = useState("");
   const [currentMode, setCurrentMode] = useState<AnalysisMode>("quick");
   const analysisRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const analyzeIdea = async (idea: string, mode: AnalysisMode, files: AttachedFile[]) => {
     setIsLoading(true);
     setAnalysis(null);
     setSubmittedIdea(idea);
     setCurrentMode(mode);
-
     try {
       // If files are attached, we could process them here
       // For now, we'll just note them in the analysis context
-      const fileContext = files.length > 0 
-        ? `\n\nAttached files for context: ${files.map(f => f.file.name).join(", ")}`
-        : "";
-
-      const { data, error } = await supabase.functions.invoke("analyze-idea", {
-        body: { 
+      const fileContext = files.length > 0 ? `\n\nAttached files for context: ${files.map(f => f.file.name).join(", ")}` : "";
+      const {
+        data,
+        error
+      } = await supabase.functions.invoke("analyze-idea", {
+        body: {
           businessIdea: idea + fileContext,
-          analysisMode: mode 
-        },
+          analysisMode: mode
+        }
       });
-
       if (error) {
         throw error;
       }
-
       if (data.error) {
         throw new Error(data.error);
       }
-
       setAnalysis(data.analysis);
     } catch (error) {
       console.error("Analysis error:", error);
       toast({
         title: "Analysis Failed",
         description: error instanceof Error ? error.message : "Failed to analyze your business idea. Please try again.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
   };
-
   const resetAnalysis = () => {
     setAnalysis(null);
     setSubmittedIdea("");
   };
-
-  const sections = analysis ? [
-    { title: "Market Opportunity", data: analysis.marketOpportunity },
-    { title: "Risk Level", data: analysis.riskLevel },
-    { title: "Time to Profitability", data: analysis.timeToProfitability },
-    { title: "Competition Intensity", data: analysis.competitionIntensity },
-    { title: "Scalability", data: analysis.scalability },
-    { title: "Resource Requirements", data: analysis.resourceRequirements },
-  ] : [];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const sections = analysis ? [{
+    title: "Market Opportunity",
+    data: analysis.marketOpportunity
+  }, {
+    title: "Risk Level",
+    data: analysis.riskLevel
+  }, {
+    title: "Time to Profitability",
+    data: analysis.timeToProfitability
+  }, {
+    title: "Competition Intensity",
+    data: analysis.competitionIntensity
+  }, {
+    title: "Scalability",
+    data: analysis.scalability
+  }, {
+    title: "Resource Requirements",
+    data: analysis.resourceRequirements
+  }] : [];
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -92,30 +94,22 @@ const Index = () => {
               <Lightbulb className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-display text-xl font-bold text-foreground">IdeaGrade</h1>
+              <h1 className="font-display text-xl font-bold text-foreground">Idea-key</h1>
               <p className="text-xs text-muted-foreground">AI Business Analyzer</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            {analysis && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={resetAnalysis}
-                className="gap-2"
-              >
+            {analysis && <Button variant="outline" size="sm" onClick={resetAnalysis} className="gap-2">
                 <RotateCcw className="h-4 w-4" />
                 New Analysis
-              </Button>
-            )}
+              </Button>}
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {!analysis && !isLoading && (
-          <div className="space-y-8">
+        {!analysis && !isLoading && <div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center space-y-4 py-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
@@ -145,17 +139,13 @@ const Index = () => {
 
             {/* Grade Legend - moved below */}
             <GradeLegend />
-          </div>
-        )}
+          </div>}
 
-        {isLoading && (
-          <div className="bg-card rounded-2xl border border-border">
+        {isLoading && <div className="bg-card rounded-2xl border border-border">
             <LoadingState />
-          </div>
-        )}
+          </div>}
 
-        {analysis && !isLoading && (
-          <div className="space-y-8" ref={analysisRef}>
+        {analysis && !isLoading && <div className="space-y-8" ref={analysisRef}>
             {/* Submitted Idea + Export Actions */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="bg-secondary/50 rounded-xl border border-border p-4 flex-1">
@@ -167,19 +157,11 @@ const Index = () => {
                 </div>
                 <p className="text-sm text-foreground">{submittedIdea}</p>
               </div>
-              <ExportActions 
-                analysis={analysis} 
-                idea={submittedIdea}
-                analysisRef={analysisRef}
-              />
+              <ExportActions analysis={analysis} idea={submittedIdea} analysisRef={analysisRef} />
             </div>
 
             {/* Overall Grade */}
-            <OverallGrade 
-              grade={analysis.overallScore.grade}
-              explanation={analysis.overallScore.explanation}
-              summary={analysis.summary}
-            />
+            <OverallGrade grade={analysis.overallScore.grade} explanation={analysis.overallScore.explanation} summary={analysis.summary} />
 
             {/* Section Grades */}
             <div className="space-y-4">
@@ -187,15 +169,7 @@ const Index = () => {
                 Detailed Breakdown
               </h2>
               <div className="grid gap-4 md:grid-cols-2">
-                {sections.map((section, index) => (
-                  <GradeCard
-                    key={section.title}
-                    title={section.title}
-                    grade={section.data.grade}
-                    explanation={section.data.explanation}
-                    delay={index * 100}
-                  />
-                ))}
+                {sections.map((section, index) => <GradeCard key={section.title} title={section.title} grade={section.data.grade} explanation={section.data.explanation} delay={index * 100} />)}
               </div>
             </div>
 
@@ -206,20 +180,15 @@ const Index = () => {
               </h3>
               <IdeaInput onSubmit={analyzeIdea} isLoading={isLoading} showModeSelector={false} />
             </div>
-          </div>
-        )}
+          </div>}
       </main>
 
       {/* Footer */}
       <footer className="mt-16">
         <div className="container mx-auto px-4 py-6 text-center">
-          <p className="text-xs text-muted-foreground">
-            Analysis powered by AI. Results are for guidance only.
-          </p>
+          <p className="text-xs text-muted-foreground">Analysis powered by Abdirahman . Results are for guidance only.</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
