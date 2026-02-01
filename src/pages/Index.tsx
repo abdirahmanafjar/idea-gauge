@@ -118,22 +118,33 @@ const Index = () => {
           <div className="space-y-8">
             {/* Hero Section */}
             <div className="text-center space-y-4 py-8">
-              <h2 className="font-display text-4xl md:text-5xl font-bold text-gradient">
-                Rate Your Business Idea
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
+                <span className="text-primary text-sm font-medium">✨ AI-Powered Analysis</span>
+              </div>
+              <h2 className="font-display text-4xl md:text-5xl font-bold">
+                <span className="text-foreground">Business Idea </span>
+                <span className="text-primary">Analyzer</span>
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Get instant AI-powered analysis of your business concept. Understand risks, 
-                market potential, and how long it takes to build a real business.
+              <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+                Get instant, comprehensive analysis of your business idea with AI-powered
+                insights across market potential, competition, revenue model, and more.
               </p>
             </div>
 
-            {/* Grade Legend */}
-            <GradeLegend />
-
             {/* Input Form */}
-            <div className="bg-card rounded-2xl border border-border p-6 md:p-8">
+            <div className="bg-card rounded-2xl border border-border p-6 md:p-8 shadow-lg">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-primary">✨</span>
+                <h3 className="font-display font-semibold text-foreground">Describe Your Business Idea</h3>
+              </div>
               <IdeaInput onSubmit={analyzeIdea} isLoading={isLoading} />
+              <p className="text-xs text-muted-foreground mt-4 text-center">
+                Be specific about your target market, value proposition, and revenue model.
+              </p>
             </div>
+
+            {/* Grade Legend - moved below */}
+            <GradeLegend />
           </div>
         )}
 
@@ -200,10 +211,10 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-16">
+      <footer className="mt-16">
         <div className="container mx-auto px-4 py-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Powered by AI • Grades range from A (worst) to F (best)
+          <p className="text-xs text-muted-foreground">
+            Analysis powered by AI. Results are for guidance only.
           </p>
         </div>
       </footer>
