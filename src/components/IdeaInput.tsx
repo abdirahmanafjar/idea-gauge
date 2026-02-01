@@ -4,12 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
 import { AnalysisModeSelector, AnalysisMode } from "@/components/AnalysisModeSelector";
 import { FileAttachment } from "@/components/FileAttachment";
-
-interface AttachedFile {
-  id: string;
-  file: File;
-  preview?: string;
-}
+import { AttachedFile } from "@/types/analysis";
 
 interface IdeaInputProps {
   onSubmit: (idea: string, mode: AnalysisMode, files: AttachedFile[]) => void;
