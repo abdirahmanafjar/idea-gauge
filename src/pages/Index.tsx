@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { IdeaInput } from "@/components/IdeaInput";
@@ -13,7 +14,7 @@ import { ComparisonResults } from "@/components/ComparisonResults";
 import { BusinessAnalysis, ComparisonAnalysis, AttachedFile } from "@/types/analysis";
 import { AnalysisMode, AnalysisModeSelector } from "@/components/AnalysisModeSelector";
 import { prepareFilesForAnalysis } from "@/lib/imageUtils";
-import { Lightbulb, RotateCcw } from "lucide-react";
+import { Lightbulb, RotateCcw, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
@@ -134,6 +135,12 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/counselor">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Brain className="h-4 w-4" />
+                AI Counselor
+              </Button>
+            </Link>
             <ThemeToggle />
             {hasResults && (
               <Button variant="outline" size="sm" onClick={resetAnalysis} className="gap-2">
