@@ -210,9 +210,11 @@ const Counselor = () => {
               </div>
             ))}
             {isLoading && messages[messages.length - 1]?.role === "user" && (
-              <div className="flex justify-start">
-                <div className="bg-card border border-border rounded-2xl px-5 py-3">
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <div className="flex justify-start animate-fade-in">
+                <div className="bg-card border border-border rounded-2xl px-5 py-4 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:0ms]" />
+                  <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
+                  <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
                 </div>
               </div>
             )}
