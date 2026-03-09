@@ -17,6 +17,10 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  if (!authLoading && user) {
+    return <Navigate to="/counselor" replace />;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
