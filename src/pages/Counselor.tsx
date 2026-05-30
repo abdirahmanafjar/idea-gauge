@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import { Brain, Send, Loader2, ArrowLeft, Trash2, Plus, MessageSquare, PanelLeftOpen, PanelLeftClose, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
