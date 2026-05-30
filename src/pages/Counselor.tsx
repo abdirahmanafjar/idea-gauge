@@ -211,12 +211,12 @@ const Counselor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background flex overflow-hidden">
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "w-72" : "w-0"
-        } transition-all duration-300 overflow-hidden border-r border-border bg-card/50 flex flex-col shrink-0`}
+        } transition-all duration-300 overflow-hidden border-r border-border bg-card/50 flex flex-col shrink-0 h-screen sticky top-0`}
       >
         <div className="p-3 border-b border-border">
           <Button
@@ -264,7 +264,7 @@ const Counselor = () => {
       </aside>
 
       {/* Main Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
         {/* Header */}
         <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
           <div className="px-4 py-4 flex items-center justify-between">
