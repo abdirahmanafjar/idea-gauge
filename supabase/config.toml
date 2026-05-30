@@ -4,4 +4,4 @@ project_id = "xvtbnhygkmsrorlnddxl"
 verify_jwt = false
 
 [functions.ai-counselor]
-verify_jwt = false
+verify_jwt = true
